@@ -63,6 +63,11 @@ public class LevelManager : MonoBehaviour {
 
 	void NextLevel() {
 		/* Update parameter untuk next level */
+		levelData.level++;
+		levelData.sendHackSpeedMult += 0.2f;
+		levelData.hackSpeedMult += 0.2f;
+		levelData.hacksLeft++;
+		levelData.nBrankas++;
 	}
 
 	void SendHack(GameObject brankas) {
@@ -79,9 +84,7 @@ public class LevelManager : MonoBehaviour {
 
 	void Collect(int brankasId) {
 		/* Collect money dari brankas ke-brankasId */
-
-
-
+		
 	}
 
 	void CollectAll() {
