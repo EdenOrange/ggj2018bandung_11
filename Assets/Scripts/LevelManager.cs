@@ -5,9 +5,12 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour {
 	/* Game loop & fungsi-fungsi yang dibutuhkan */
 
+	private LevelData levelData;
+
 	// Use this for initialization
 	void Start () {
-		
+		levelData = GetComponent<LevelData>();
+		levelData.gameStatus = (int)LevelData.GameStatus.GAMESTATUS_MENU;
 	}
 	
 	// Update is called once per frame
@@ -17,8 +20,10 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	void StartGame() {
-		/* Mulai gamenya
-		 * Inisialisasi parameter-parameter level */
+		/* Mulai gamenya */
+		InitLevelData();
+		GenerateLevel();
+		SpawnBrankas();
 	}
 
 	void GameOver() {
@@ -26,8 +31,26 @@ public class LevelManager : MonoBehaviour {
 		 * Tampilin end game UI */
 	}
 
+	void InitLevelData() {
+		/* Init level data parameters */
+		levelData.level = 1;
+		levelData.sendHackSpeed = 10;
+		levelData.sendHackSpeedMult = 1;
+		levelData.hackSpeed = 10;
+		levelData.hackSpeedMult = 1;
+		levelData.money = 0;
+		levelData.hacksLeft = 2;
+		levelData.gameStatus = (int)LevelData.GameStatus.GAMESTATUS_PLAY;
+		levelData.nBrankas = 1;
+	}
+
 	void GenerateLevel() {
 		/* Generate lokasi-lokasi brankas */
+	}
+
+	void SpawnBrankas() {
+		/* Spawn brankas sebanyak levelData.nBrankas */
+		// Jangan lupa set id brankas yang dispawn
 	}
 
 	void DropBrankas() {

@@ -8,6 +8,7 @@ public class Brankas : MonoBehaviour {
 	public float progress; // 0..openLimit..maxLimit
 	public float openLimit;
 	public float maxLimit;
+	public int status;
 	public enum Status {
 		BRANKAS_CLOSED,
 		BRANKAS_OPENING,
@@ -19,11 +20,11 @@ public class Brankas : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		levelData = GameObject.FindWithTag("GameController").GetComponent<LevelData>();
-		id = levelData.nBrankas++;
+		// id = diatur spawner
 		progress = 0;
 		openLimit = 100;
 		maxLimit = 150;
-		Status = BRANKAS_CLOSED;
+		status = (int)Status.BRANKAS_CLOSED;
 	}
 	
 	// Update is called once per frame
