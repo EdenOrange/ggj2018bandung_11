@@ -6,18 +6,20 @@ public class LevelData : MonoBehaviour {
 	/* Isi variabel-variabel yang berhubungan dengan game */
 
 	public int level;
-	public float sendHackSpeed;
+	public float sendHackSpeed; // Speed dari hacker ke brankas tujuan
 	public float sendHackSpeedMult;
-	public float hackSpeed;
+	public float hackSpeed; // Speed dari brankas ke money bag
 	public float hackSpeedMult;
-	public int money;
-	public int highScore;
-	public int hacksLeft;
+	public float money; // Score
+	public float highScore;
+	public int hacksLeft; // Banyak hacks tersisa sebelum next level
+	public int gameStatus;
 	public enum GameStatus {
+		GAMESTATUS_MENU,
 		GAMESTATUS_PLAY,
 		GAMESTATUS_END
 	}
-	//public Brankas brankasList[];
+	public int nBrankas; // Banyaknya brankas di level saat ini
 
 	// Use this for initialization
 	void Start () {

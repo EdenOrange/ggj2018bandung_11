@@ -47,5 +47,6 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-# Ignore scenes
+# Ignore scenes and meta files
 *.unity*
+*.meta
