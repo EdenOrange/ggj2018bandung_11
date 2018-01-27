@@ -6,11 +6,13 @@ public class LevelManager : MonoBehaviour {
 	/* Game loop & fungsi-fungsi yang dibutuhkan */
 
 	private LevelData levelData;
+	private GameObject[] arrayBrankas;
 
 	// Use this for initialization
 	void Start () {
 		levelData = GetComponent<LevelData>();
 		levelData.gameStatus = (int)LevelData.GameStatus.GAMESTATUS_MENU;
+
 	}
 	
 	// Update is called once per frame
@@ -46,6 +48,7 @@ public class LevelManager : MonoBehaviour {
 
 	void GenerateLevel() {
 		/* Generate lokasi-lokasi brankas */
+
 	}
 
 	void SpawnBrankas() {
@@ -62,16 +65,23 @@ public class LevelManager : MonoBehaviour {
 		/* Update parameter untuk next level */
 	}
 
-	void SendHack(int brankasId) {
+	void SendHack(GameObject brankas) {
 		/* Kirim hack ke brankas ke-brankasId */
+
 	}
 
-	void StartHack(int brankasId) {
+	void StartHack(GameObject brankas) {
 		/* Brankas ke-brankasId mulai kebuka */
+
+		brankas.GetComponent<Brankas>().status = (int)Brankas.Status.BRANKAS_OPENING;
+
 	}
 
 	void Collect(int brankasId) {
 		/* Collect money dari brankas ke-brankasId */
+
+
+
 	}
 
 	void CollectAll() {
