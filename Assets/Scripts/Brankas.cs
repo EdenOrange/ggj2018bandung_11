@@ -30,11 +30,16 @@ public class Brankas : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (status == (int)Status.BRANKAS_OPENING && progress < maxLimit) {
+		if (progress < maxLimit && status != (int) Status.BRANKAS_CLOSED) {
+			if (status == (int)Status.BRANKAS_OPENING && progress > openLimit) {
+				status = (int)Status.BRANKAS_OPENED;
+			}
 			progress += Time.deltaTime * levelData.hackSpeed;
-			
+		} else {
+			status = (int)Status.BRANKAS_CLOSED;
 		}
-		
+
+
 	}
 
 

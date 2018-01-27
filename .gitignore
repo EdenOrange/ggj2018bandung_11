@@ -49,3 +49,4 @@ sysinfo.txt
 # Ignore scenes and meta files
 *.unity*
 *.meta
+/ProjectSettings
