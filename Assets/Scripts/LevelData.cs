@@ -10,14 +10,14 @@ public class LevelData : MonoBehaviour {
 	public float sendHackSpeedMult;
 	public float hackSpeed;
 	public float hackSpeedMult;
-	public int money;
-	public int highScore;
+	public float money;
+	public float highScore;
 	public int hacksLeft;
 	public enum GameStatus {
 		GAMESTATUS_PLAY,
 		GAMESTATUS_END
 	}
-	//public Brankas brankasList[];
+	public int nBrankas;
 
 	// Use this for initialization
 	void Start () {
