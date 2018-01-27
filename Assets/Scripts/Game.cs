@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Game : MonoBehaviour {
 
 	// Use this for initialization
 	public Safebox[] boxes;
 	public int money;
+
+	public Text score;
+
 	void Start () {
 		
 	}
@@ -18,6 +22,7 @@ public class Game : MonoBehaviour {
 				money += box.collect ();
 				Debug.Log ("Money : "+money);
 			}
+			score.text = "" + money;
 		}
 		//Debug.Log (money);
 	}

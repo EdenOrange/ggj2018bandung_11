@@ -1,20 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour {
 	/* Game loop & fungsi-fungsi yang dibutuhkan */
 
+	public GameObject[] arraySpawn;
+	public GameObject brankasPrefab;
+
+	private List<int> brankasToSpawn = new List<int> ();
+	private List<GameObject> brankasSpawned = new List<GameObject> ();
 	private LevelData levelData;
+	private Fader fader;
+
+	public Text gameScore;
+	public Text gameHighscore;
+	public Text endScore;
+	public Text endHighscore;
+
 	private GameObject[] arrayBrankas;
 	private float delay = 3.0f;
 	// Use this for initialization
 	void Start () {
 		levelData = GetComponent<LevelData>();
 		levelData.gameStatus = (int)LevelData.GameStatus.GAMESTATUS_MENU;
+		//fader = GameObject.Find ("UI").GetComponent<Fader> ();
 
+		StartGame ();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		/* Game Loop
@@ -48,19 +63,31 @@ public class LevelManager : MonoBehaviour {
 
 	void GenerateLevel() {
 		/* Generate lokasi-lokasi brankas */
-
+		int count = 0;
+		while (count < levelData.nBrankas) {
+			int idx = Random.Range (0, 7);
+			if (!brankasToSpawn.Contains (idx)) {
+				brankasToSpawn.Add (idx);
+				count++;
+			}
+		}
 	}
 
 	void SpawnBrankas() {
 		/* Spawn brankas sebanyak levelData.nBrankas */
 		// Jangan lupa set id brankas yang dispawn
+		foreach (int i in brankasToSpawn) {
+			GameObject newBrankas = Instantiate (brankasPrefab, arraySpawn [i].transform.position, arraySpawn [i].transform.rotation);
+			brankasSpawned.Add (newBrankas);
+		}	
+
 	}
 
 	void DropBrankas(GameObject brankas) {
 		/* Persiapan next level
 		 * Brankas sekarang jatoh */
-		 yield WaitForSecond(delay);
-		 Destroy (brankas);
+		//yield WaitForSecond(delay);
+		//Destroy (brankas);
 	}
 
 	void NextLevel() {
@@ -96,7 +123,7 @@ public class LevelManager : MonoBehaviour {
 		/* Collect money dari seluruh brankas */
 		// Cek apakah ada brankas yang kebuka
 		bool anyBrankasOpen = false;
-		foreach (GameObject brankas in arrayBrankas) {
+		foreach (GameObject brankas in brankasSpawned) {
 			Brankas brankasScript = brankas.GetComponent<Brankas>();
 			if (brankasScript.status == (int)Brankas.Status.BRANKAS_OPENING || brankasScript.status == (int)Brankas.Status.BRANKAS_OPENED) {
 				anyBrankasOpen = true;
@@ -108,7 +135,7 @@ public class LevelManager : MonoBehaviour {
 			GameOver();
 		}
 		else {
-			foreach (GameObject brankas in arrayBrankas) {
+			foreach (GameObject brankas in brankasSpawned) {
 				Brankas brankasScript = brankas.GetComponent<Brankas>();
 				// Kalau brankas opening/opened (bisa di collect), collect
 				if (brankasScript.status != (int)Brankas.Status.BRANKAS_CLOSED) {
