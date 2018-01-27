@@ -47,4 +47,4 @@ sysinfo.txt
 *.unitypackage
 
 # Ignore scenes
-*.unity
+*.unity*

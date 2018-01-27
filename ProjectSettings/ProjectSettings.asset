@@ -4,15 +4,26 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 14
+<<<<<<< HEAD
   productGUID: aa8375d848cf6554a9121ab836f72d84
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   defaultScreenOrientation: 4
+=======
+  productGUID: 63e96b3d08a30a446a9a2139bd73d850
+  AndroidProfiler: 0
+  AndroidFilterTouchesWhenObscured: 0
+  defaultScreenOrientation: 3
+>>>>>>> 4bb3ce1eb57c39830f53a1295700c0bc68e28cef
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
+<<<<<<< HEAD
   productName: GGJHOMK2
+=======
+  productName: ggj2018bandung_11
+>>>>>>> 4bb3ce1eb57c39830f53a1295700c0bc68e28cef
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -558,14 +569,22 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
+<<<<<<< HEAD
   metroPackageName: GGJHOMK2
+=======
+  metroPackageName: ggj2018bandung_11
+>>>>>>> 4bb3ce1eb57c39830f53a1295700c0bc68e28cef
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
+<<<<<<< HEAD
   metroApplicationDescription: GGJHOMK2
+=======
+  metroApplicationDescription: ggj2018bandung_11
+>>>>>>> 4bb3ce1eb57c39830f53a1295700c0bc68e28cef
   wsaImages: {}
   metroTileShortName: 
   metroCommandLineArgsFile: 
