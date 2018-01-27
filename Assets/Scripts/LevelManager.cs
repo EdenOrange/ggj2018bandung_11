@@ -7,7 +7,7 @@ public class LevelManager : MonoBehaviour {
 
 	private LevelData levelData;
 	private GameObject[] arrayBrankas;
-
+	private float delay = 3.0f;
 	// Use this for initialization
 	void Start () {
 		levelData = GetComponent<LevelData>();
@@ -56,9 +56,11 @@ public class LevelManager : MonoBehaviour {
 		// Jangan lupa set id brankas yang dispawn
 	}
 
-	void DropBrankas() {
+	void DropBrankas(GameObject brankas) {
 		/* Persiapan next level
 		 * Brankas sekarang jatoh */
+		 yield WaitForSecond(delay);
+		 Destroy (brankas);
 	}
 
 	void NextLevel() {
