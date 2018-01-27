@@ -11,6 +11,7 @@ public class LevelManager : MonoBehaviour {
 
 	private List<int> brankasToSpawn = new List<int> ();
 	private List<GameObject> brankasSpawned = new List<GameObject> ();
+	private bool[] sendingHack;
 	private LevelData levelData;
 	private Fader fader;
 
@@ -19,21 +20,40 @@ public class LevelManager : MonoBehaviour {
 	public Text endScore;
 	public Text endHighscore;
 
-	private GameObject[] arrayBrankas;
-	private float delay = 3.0f;
+	private int maxBrankas;
+	private float hackDelay;
+	
 	// Use this for initialization
 	void Start () {
 		levelData = GetComponent<LevelData>();
 		levelData.gameStatus = (int)LevelData.GameStatus.GAMESTATUS_MENU;
 		//fader = GameObject.Find ("UI").GetComponent<Fader> ();
-
+		maxBrankas = 7;
+		hackDelay = levelData.hackDefaultDelay;
+		for (int i=0; i<maxBrankas; i++) sendingHack[i] = false;
+		
 		StartGame ();
 	}
 
 	// Update is called once per frame
 	void Update () {
 		/* Game Loop
-		 * Randomize kapan mulai dan boleh SendHack() */
+		 * SendHack() akan dipanggil setiap levelData.hackDefaultDelay
+		 * Hanya akan dicek ketika game sedang play
+		 * Tidak boleh mengirim ke brankas yang sedang SendHack(), namun belum StartHack()
+		 * Tidak boleh mengirim ke brankas yang sedang dihack (StartHack() sedang jalan) */
+
+		if (levelData.gameStatus == (int)LevelData.GameStatus.GAMESTATUS_PLAY) {
+			hackDelay -= Time.deltaTime;
+			if (hackDelay <= 0) {
+				int id = Random.Range(0, brankasSpawned.Count);
+				if (!sendingHack[id] && brankasSpawned[id].GetComponent<Brankas>().status == (int)Brankas.Status.BRANKAS_CLOSED) {
+					SendHack(id);
+					sendingHack[id] = true;
+					hackDelay = levelData.hackDefaultDelay;
+				}
+			}
+		}
 	}
 
 	void StartGame() {
@@ -65,7 +85,7 @@ public class LevelManager : MonoBehaviour {
 		/* Generate lokasi-lokasi brankas */
 		int count = 0;
 		while (count < levelData.nBrankas) {
-			int idx = Random.Range (0, 7);
+			int idx = Random.Range (0, maxBrankas);
 			if (!brankasToSpawn.Contains (idx)) {
 				brankasToSpawn.Add (idx);
 				count++;
@@ -79,15 +99,15 @@ public class LevelManager : MonoBehaviour {
 		foreach (int i in brankasToSpawn) {
 			GameObject newBrankas = Instantiate (brankasPrefab, arraySpawn [i].transform.position, arraySpawn [i].transform.rotation);
 			brankasSpawned.Add (newBrankas);
+			sendingHack[i] = false;
 		}	
-
 	}
 
 	void DropBrankas(GameObject brankas) {
 		/* Persiapan next level
-		 * Brankas sekarang jatoh */
-		//yield WaitForSecond(delay);
-		//Destroy (brankas);
+		 * Brankas sekarang jatoh dan destroy */
+		brankas.GetComponent<BoxCollider>().enabled = false;
+		Destroy(brankas, 1.0f);
 	}
 
 	void NextLevel() {
@@ -99,14 +119,16 @@ public class LevelManager : MonoBehaviour {
 		levelData.nBrankas++;
 	}
 
-	void SendHack(GameObject brankas) {
+	void SendHack(int brankasId) {
 		/* Kirim hack ke brankas ke-brankasId */
-
+		sendingHack[brankasId] = true;
+		// Animasi SendHack
 	}
 
-	void StartHack(GameObject brankas) {
+	void StartHack(int brankasId) {
 		/* Brankas ke-brankasId mulai kebuka */
-		Brankas brankasScript = brankas.GetComponent<Brankas>();
+		sendingHack[brankasId] = false;
+		Brankas brankasScript = brankasSpawned[brankasId].GetComponent<Brankas>();
 		brankasScript.status = (int)Brankas.Status.BRANKAS_OPENING;
 
 	}

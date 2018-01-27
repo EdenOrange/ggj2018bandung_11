@@ -10,6 +10,7 @@ public class LevelData : MonoBehaviour {
 	public float sendHackSpeedMult;
 	public float hackSpeed; // Speed dari brankas ke money bag
 	public float hackSpeedMult;
+	public float hackDefaultDelay; // Delay antar hack
 	public float money; // Score
 	public float highScore;
 	public int hacksLeft; // Banyak hacks tersisa sebelum next level
