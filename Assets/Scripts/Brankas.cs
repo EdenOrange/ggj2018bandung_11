@@ -5,6 +5,7 @@ using UnityEngine;
 public class Brankas : MonoBehaviour {
 
 	public int id;
+	public float money;
 	public float progress; // 0..openLimit..maxLimit
 	public float openLimit;
 	public float maxLimit;
@@ -30,7 +31,7 @@ public class Brankas : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (progress < maxLimit && status != (int) Status.BRANKAS_CLOSED) {
+		if (progress <= maxLimit && status != (int) Status.BRANKAS_CLOSED) {
 			if (status == (int)Status.BRANKAS_OPENING && progress > openLimit) {
 				status = (int)Status.BRANKAS_OPENED;
 			}

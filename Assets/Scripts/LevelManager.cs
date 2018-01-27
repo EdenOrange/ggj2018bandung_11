@@ -77,21 +77,46 @@ public class LevelManager : MonoBehaviour {
 
 	void StartHack(GameObject brankas) {
 		/* Brankas ke-brankasId mulai kebuka */
-
-		brankas.GetComponent<Brankas>().status = (int)Brankas.Status.BRANKAS_OPENING;
+		Brankas brankasScript = brankas.GetComponent<Brankas>();
+		brankasScript.status = (int)Brankas.Status.BRANKAS_OPENING;
 
 	}
 
-	void Collect(int brankasId) {
-		/* Collect money dari brankas ke-brankasId */
-		
+	void Collect(GameObject brankas) {
+		/* Collect money dari brankas */
+		// Brankas pasti sudah bisa dicollect
+		Brankas brankasScript = brankas.GetComponent<Brankas>();
+		brankasScript.status = (int)Brankas.Status.BRANKAS_CLOSED;
+		SendMoney(brankasScript.money * Mathf.Max(brankasScript.progress, 100) / 100);
 	}
 
 	void CollectAll() {
 		/* Collect money dari seluruh brankas */
+		// Cek apakah ada brankas yang kebuka
+		bool anyBrankasOpen = false;
+		foreach (GameObject brankas in arrayBrankas) {
+			Brankas brankasScript = brankas.GetComponent<Brankas>();
+			if (brankasScript.status == (int)Brankas.Status.BRANKAS_OPENING || brankasScript.status == (int)Brankas.Status.BRANKAS_OPENED) {
+				anyBrankasOpen = true;
+				break;
+			}
+		}
+		// Kalau tidak ada brankas terbuka, game over
+		if (!anyBrankasOpen) {
+			GameOver();
+		}
+		else {
+			foreach (GameObject brankas in arrayBrankas) {
+				Brankas brankasScript = brankas.GetComponent<Brankas>();
+				// Kalau brankas opening/opened (bisa di collect), collect
+				if (brankasScript.status != (int)Brankas.Status.BRANKAS_CLOSED) {
+					Collect(brankas);
+				}
+			}
+		}
 	}
 
-	void SendMoney(int brankasId) {
+	void SendMoney(float money) {
 		/* Kirim money dari brankas ke-brankasId ke tas */
 	}
 }
