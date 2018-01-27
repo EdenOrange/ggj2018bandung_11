@@ -1,14 +1,6 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:Assets/Prefabs.meta
-guid: 84917319f54f2774487fbe77ff49912a
+guid: eb49656dda57f36488639908f942174e
 folderAsset: yes
-timeCreated: 1517019489
-=======
-guid: 073455ffdc463e647962b2a033f07cc5
-folderAsset: yes
-timeCreated: 1517019366
->>>>>>> 4bb3ce1eb57c39830f53a1295700c0bc68e28cef:Assets/Scenes.meta
-licenseType: Free
 DefaultImporter:
   externalObjects: {}
   userData: 
