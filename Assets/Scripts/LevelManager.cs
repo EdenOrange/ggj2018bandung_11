@@ -38,6 +38,16 @@ public class LevelManager : MonoBehaviour {
 	private int goingToCollect;
 	private Animator sendHackAnim;
 	private int highscore;
+
+	private int platform; // 0 = Windows, 1 = Android, 2 = Other
+
+	void Awake() {
+		if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
+			platform = 0;
+		} else if (Application.platform == RuntimePlatform.Android) {
+			platform = 1;
+		}
+	}
 	
 	// Use this for initialization
 	void Start () {
@@ -137,28 +147,53 @@ public class LevelManager : MonoBehaviour {
 				}
 			}
 		}
-
-		if (Input.GetKeyDown(KeyCode.Space) && levelData.gameStatus == (int) LevelData.GameStatus.GAMESTATUS_PLAY) {
-			Debug.Log ("COLLECT ALL");
-			CollectAll();
-		}
-
-		else if (Input.GetKeyDown (KeyCode.Space) && levelData.gameStatus == (int) LevelData.GameStatus.GAMESTATUS_MENU) {
-			Debug.Log ("SPACE PRESSED");
-			StartCoroutine (Fade (start, false));
-			StartCoroutine (Fade (game, true));
-			StartGame ();
-			Debug.Log (levelData.gameStatus);
-		}
-
-		else if (Input.GetKeyDown (KeyCode.Space) && levelData.gameStatus == (int) LevelData.GameStatus.GAMESTATUS_END && !inAnimation) {
-			Debug.Log ("SPACE PRESSED, RETRY");
-			StartCoroutine (Fade (end, false));
-			StartCoroutine (Fade (game, true));
-			StartGame ();
-			Debug.Log (levelData.gameStatus);
+		/*
+		if (platform == 1) {
+			// Android
+			Debug.Log("Android");
+			if (Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Began) {
+				if (levelData.gameStatus == (int)LevelData.GameStatus.GAMESTATUS_PLAY) {
+					Debug.Log ("COLLECT ALL");
+					CollectAll ();
+				} else if (levelData.gameStatus == (int)LevelData.GameStatus.GAMESTATUS_MENU) {
+					Debug.Log ("SPACE PRESSED");
+					StartCoroutine (Fade (start, false));
+					StartCoroutine (Fade (game, true));
+					StartGame ();
+					Debug.Log (levelData.gameStatus);
+				} else if (Input.GetKeyDown (KeyCode.Space) && levelData.gameStatus == (int)LevelData.GameStatus.GAMESTATUS_END && !inAnimation) {
+					Debug.Log ("SPACE PRESSED, RETRY");
+					StartCoroutine (Fade (end, false));
+					StartCoroutine (Fade (game, true));
+					StartGame ();
+					Debug.Log (levelData.gameStatus);
+				} 
+			}
 		} 
+		else {*/
+			// Windows or others
 
+			if ((Input.GetKeyDown(KeyCode.Space) || (Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Began)) && levelData.gameStatus == (int) LevelData.GameStatus.GAMESTATUS_PLAY) {
+				Debug.Log ("COLLECT ALL");
+				CollectAll();
+			}
+
+			else if ((Input.GetKeyDown(KeyCode.Space) || (Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Began)) && levelData.gameStatus == (int) LevelData.GameStatus.GAMESTATUS_MENU) {
+				Debug.Log ("SPACE PRESSED");
+				StartCoroutine (Fade (start, false));
+				StartCoroutine (Fade (game, true));
+				StartGame ();
+				Debug.Log (levelData.gameStatus);
+			}
+
+			else if ((Input.GetKeyDown(KeyCode.Space) || (Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Began)) && levelData.gameStatus == (int) LevelData.GameStatus.GAMESTATUS_END && !inAnimation) {
+				Debug.Log ("SPACE PRESSED, RETRY");
+				StartCoroutine (Fade (end, false));
+				StartCoroutine (Fade (game, true));
+				StartGame ();
+				Debug.Log (levelData.gameStatus);
+			} 
+		//}
 
 	}
 
