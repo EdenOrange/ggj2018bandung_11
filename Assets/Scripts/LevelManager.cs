@@ -25,6 +25,8 @@ public class LevelManager : MonoBehaviour {
 	private float[] progressSendHack;
 	public static bool ready = false;
 	//public static 
+	public Text startMsg;
+	public Text endMsg;
 	public Text gameScore;
 	public Text gameHighscore;
 	public Text endScore;
@@ -207,6 +209,13 @@ public class LevelManager : MonoBehaviour {
 		end.alpha = 0;
 		end.interactable = false;
 		endHighscore.text = highscore.ToString ();
+		if (platform == 1) {
+			startMsg.text = "Tap to Play!\nCollect money by tapping\nwhen vault is open!";
+			endMsg.text = "Tap to retry!";
+		} else {
+			startMsg.text = "Press space to Play!\nCollect money by pressing space\nwhen vault is open!";
+			endMsg.text = "Press space to retry!";
+		}
 	}
 
 	void StartGame() {
