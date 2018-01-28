@@ -25,6 +25,7 @@ public class Brankas : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		SoundManager.instance.playSFX (SoundManager.BRANKASSPAWN);
 		levelData = GameObject.FindWithTag("GameController").GetComponent<LevelData>();
 		levelManager = GameObject.FindWithTag("GameController").GetComponent<LevelManager>();
 		// id = diatur spawner
@@ -61,7 +62,15 @@ public class Brankas : MonoBehaviour {
 
 		}
 
-	}
 
+	}
+	void OnCollisionEnter(Collision col){
+		Debug.Log ("Collide");
+		Debug.Log (col.gameObject.name);
+		if(col.gameObject.CompareTag("ground")){
+			
+			SoundManager.instance.playSFX (SoundManager.BRANKASDROP);
+		}
+	}
 
 }

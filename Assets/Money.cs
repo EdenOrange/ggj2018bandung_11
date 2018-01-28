@@ -20,6 +20,7 @@ public class Money : MonoBehaviour {
 	public void Animate(){
 		if (animate)
 			return;
+		SoundManager.instance.playSFX (SoundManager.COINCOLLECT);
 		finalPos = GameObject.Find ("MoneyStash");
 		animate = true;
 		gameObject.transform.DOMove (finalPos.transform.position, 1f).OnComplete (() => {

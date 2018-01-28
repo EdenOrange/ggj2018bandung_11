@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour {
 	/* Game loop & fungsi-fungsi yang dibutuhkan */
@@ -19,39 +20,46 @@ public class LevelManager : MonoBehaviour {
 	private List<int> brankasToSpawn = new List<int> ();
 	private bool[] sendingHack;
 	private bool[] collecting;
-	private LevelData levelData;
+	public LevelData levelData;
 	private bool inAnimation = false;
 	private float[] progressSendHack;
-
+	public static bool ready = false;
+	//public static 
 	public Text gameScore;
 	public Text gameHighscore;
 	public Text endScore;
 	public Text endHighscore;
-
+	public Text startHighscore;
+	public static LevelManager instance;
 	private bool gameStarted = false;
 	private int maxBrankas;
 	private float hackDelay;
 	private int hacksLeft;
+	private int goingToCollect;
 	private Animator sendHackAnim;
+	private int highscore;
 	
 	// Use this for initialization
 	void Start () {
-
+		
 		foreach (GameObject alirandata in aliranData) {
 			alirandata.GetComponent<Animator> ().speed = 0;
 			//alirandata.SetActive (false);
 		}
 
 		levelData = GetComponent<LevelData>();
-		levelData.gameStatus = (int)LevelData.GameStatus.GAMESTATUS_MENU;
+		//levelData.gameStatus = (int)LevelData.GameStatus.GAMESTATUS_MENU;
 		//fader = GameObject.Find ("UI").GetComponent<Fader> ();
 		maxBrankas = 7;
 		sendingHack = new bool[maxBrankas];
 		collecting = new bool[maxBrankas];
 		progressSendHack = new float[maxBrankas];
+		highscore = PlayerPrefs.GetInt ("highscore", 0);
 		StartUI ();
+		if (instance == null)
+			instance = this;
 		//StartGame ();
-
+	
 	}
 
 	// Update is called once per frame
@@ -61,7 +69,8 @@ public class LevelManager : MonoBehaviour {
 		 * Hanya akan dicek ketika game sedang play
 		 * Tidak boleh mengirim ke brankas yang sedang SendHack(), namun belum StartHack()
 		 * Tidak boleh mengirim ke brankas yang sedang dihack (StartHack() sedang jalan) */
-
+		if (!ready)
+			return;
 		if (levelData.gameStatus == (int)LevelData.GameStatus.GAMESTATUS_PLAY) {
 			hackDelay -= Time.deltaTime;
 			if (hackDelay <= 0 && hacksLeft > 0) {
@@ -79,7 +88,7 @@ public class LevelManager : MonoBehaviour {
 					if (repeat) {
 						hackDelay = Random.Range (0.05f, 0.2f);
 					} else {
-						hackDelay = levelData.hackDefaultDelay * Random.Range(0.7f, 1.3f);
+						hackDelay = levelData.hackDefaultDelay * Random.Range(0.7f, 1.0f);
 					}
 					hacksLeft--;
 				}
@@ -156,10 +165,13 @@ public class LevelManager : MonoBehaviour {
 	void StartUI() {
 		start.alpha = 1;
 		start.interactable = true;
+		startHighscore.text = highscore.ToString ();
 		game.alpha = 0;
 		game.interactable = false;
+		gameHighscore.text = highscore.ToString ();
 		end.alpha = 0;
 		end.interactable = false;
+		endHighscore.text = highscore.ToString ();
 	}
 
 	void StartGame() {
@@ -186,6 +198,14 @@ public class LevelManager : MonoBehaviour {
 		// Game over
 		Debug.Log("GAME OVER");
 		endScore.text = levelData.money.ToString();
+		if (levelData.money > highscore) {
+			highscore = Mathf.RoundToInt (levelData.money);
+			PlayerPrefs.SetInt ("highscore", highscore);
+			PlayerPrefs.Save();
+		}
+		startHighscore.text = highscore.ToString();
+		gameHighscore.text = highscore.ToString();
+		endHighscore.text = highscore.ToString();
 		levelData.gameStatus = (int)LevelData.GameStatus.GAMESTATUS_END;
 		// Tampilin UI game over
 		StartCoroutine(Fade(game,false)); 
@@ -227,6 +247,7 @@ public class LevelManager : MonoBehaviour {
 			newBrankas.GetComponent<Brankas> ().id = i;
 			brankasSpawned.Add (newBrankas);
 			sendingHack[i] = false;
+
 		}	
 	}
 
@@ -253,16 +274,21 @@ public class LevelManager : MonoBehaviour {
 	void NextLevel() {
 		ClearBrankas(false);
 		// Update parameter untuk next level
-		levelData.level++;
-		levelData.sendHackSpeedMult += 0.2f;
-		levelData.hackSpeedMult += 0.2f;
-		levelData.hackDefaultDelay -= 0.2f;
-		if (levelData.level == 7) {
-			levelData.hacksLeft = 999999;
-		} else {
+		if (levelData.level >= 7) {
+			levelData.level++;
+			levelData.sendHackSpeedMult += 0.1f;
+			levelData.hackSpeedMult += 0.1f;
+			levelData.hackDefaultDelay -= 0f;
 			levelData.hacksLeft += 2;
 		} 
-		levelData.nBrankas++;
+		else {
+			levelData.level++;
+			levelData.sendHackSpeedMult += 0.2f;
+			levelData.hackSpeedMult += 0.2f;
+			levelData.hackDefaultDelay -= 0.2f;
+			levelData.hacksLeft += 2;
+			levelData.nBrankas++;
+		}
 		hacksLeft = levelData.hacksLeft;
 		GenerateLevel();
 		for (int i=0; i<maxBrankas; i++) sendingHack[i] = false;
@@ -289,6 +315,7 @@ public class LevelManager : MonoBehaviour {
 		/* Brankas ke-brankasId mulai kebuka */
 		//int idx = brankasSpawned [brankasId].GetComponent<Brankas>().id;
 		int i = 0;
+		SoundManager.instance.playSFX (SoundManager.COINHACK);
 		while (brankasId != brankasSpawned [i].GetComponent<Brankas> ().id) {
 			i++;
 		}
@@ -303,11 +330,12 @@ public class LevelManager : MonoBehaviour {
 		Brankas brankasScript = brankas.GetComponent<Brankas>();
 		brankasScript.moneyGraphic.SetActive (true);
 		brankasScript.moneyGraphic.GetComponent<Money> ().Animate();
+
 		/* Collect money dari brankas */
 		// Brankas pasti sudah bisa dicollect
 
 		brankasScript.status = (int)Brankas.Status.BRANKAS_CLOSED;
-		SendMoney(brankasScript.money * Mathf.Min(brankasScript.progress, 100f) / 100f);
+		SendMoney(Mathf.Round(brankasScript.money * Mathf.Min(brankasScript.progress, 100f) / 100f * goingToCollect));
 		Debug.Log ("Collect from brankas " + brankas);
 		//Animator anim = brankas.GetComponent<Animator> ();
 		//ffanim.SetBool ("isOpen", false);
@@ -326,6 +354,7 @@ public class LevelManager : MonoBehaviour {
 		/* Collect money dari seluruh brankas */
 		// Cek apakah ada brankas yang kebuka
 		bool anyBrankasOpen = false;
+		goingToCollect = 0;
 		foreach (GameObject brankas in brankasSpawned) {
 			Brankas brankasScript = brankas.GetComponent<Brankas>();
 			if (brankasScript.status == (int)Brankas.Status.BRANKAS_OPENING || brankasScript.status == (int)Brankas.Status.BRANKAS_OPENED) {
@@ -342,8 +371,8 @@ public class LevelManager : MonoBehaviour {
 				Brankas brankasScript = brankas.GetComponent<Brankas>();
 				// Kalau brankas opening/opened (bisa di collect), collect
 				if (brankasScript.status != (int)Brankas.Status.BRANKAS_CLOSED) {
+					goingToCollect++;
 					Collect(brankas);
-
 				}
 			}
 		}
@@ -381,6 +410,10 @@ public class LevelManager : MonoBehaviour {
 			group.interactable = false;
 		}
 		inAnimation = false;
+	}
+
+	public void Credits() {
+		SceneManager.LoadScene ("scAboutus");
 	}
 
 }
